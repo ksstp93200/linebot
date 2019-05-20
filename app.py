@@ -28,6 +28,10 @@ handler = WebhookHandler('67f3fc39b2f43287b6b34bb7ce54b1d7')
 global playlist
 playlist = []
 
+def gettime(s):
+    t = s.split(":")
+    return int(t[0]) * 60 * 60 + int(t[1]) * 60 + int(t[2])
+
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
 def callback():
