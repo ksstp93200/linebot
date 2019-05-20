@@ -99,7 +99,7 @@ def handle_message(event):
         print("Sent")
         ws.close()
         message = TextSendMessage(text='Music had been paused.')
-    elif text[0] == '!play':
+    elif text[0] == '!start':
         ws = create_connection("ws://videocontrolwebsocket.herokuapp.com", http_proxy_port=80)
         ws.send(json.dumps({"type": "play"}))
         print("Sent")
