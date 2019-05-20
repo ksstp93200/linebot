@@ -1,4 +1,6 @@
 line-bot-sdk
 flask
 requests
-bs4 pafy websocket
+bs4
+pafy
+websocket
