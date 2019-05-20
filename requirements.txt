@@ -3,5 +3,6 @@ flask
 requests
 bs4
 pafy
-websocket
+websockets
 youtube-dl
+websocket-client
