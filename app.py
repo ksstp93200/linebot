@@ -1,0 +1,116 @@
+from flask import Flask, request, abort
+
+from linebot import (
+    LineBotApi, WebhookHandler
+)
+from linebot.exceptions import (
+    InvalidSignatureError
+)
+from linebot.models import *
+
+#####
+import requests
+from bs4 import BeautifulSoup
+import webbrowser
+
+import pafy
+from websocket import create_connection
+import json
+
+app = Flask(__name__)
+
+# Channel Access Token
+line_bot_api = LineBotApi('fFNRxLrANqaPIV9TVBuD90+S8sD8JgiKtpssq8oZwYnu/mcbMwlbojMZvOpwR+Nq0K06J7DXVXEwmzHiGuC0zYkDYLaiHrwh4w9QCubxtFVymjqF60C4pPKXQGj0FfqqW1Wy03+vAo0POYOfkmdsxQdB04t89/1O/w1cDnyilFU=')
+# Channel Secret
+handler = WebhookHandler('67f3fc39b2f43287b6b34bb7ce54b1d7')
+
+#####
+global playlist
+playlist = []
+
+# 監聽所有來自 /callback 的 Post Request
+@app.route("/callback", methods=['POST'])
+def callback():
+    # get X-Line-Signature header value
+    signature = request.headers['X-Line-Signature']
+    # get request body as text
+    body = request.get_data(as_text=True)
+    app.logger.info("Request body: " + body)
+    # handle webhook body
+    try:
+        handler.handle(body, signature)
+    except InvalidSignatureError:
+        abort(400)
+    return 'OK'
+
+# 處理訊息
+@handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+    global playlist
+    text = event.message.text.split()
+    if text[0] == '!play':
+        temp = ''
+        for i in text[1:]:
+            temp += i + ' '
+        temp = temp[:-1]
+        if temp.startswith('https://www.youtube.com/watch?v='):
+            temp = temp
+            video = pafy.new(temp)
+            best = video.getbest()
+            playurl = best.url
+            ws = create_connection("ws://videocontrolwebsocket.herokuapp.com", http_proxy_port=80)
+            ws.send(json.dumps({"type": "url", "data": playurl, 'time': gettime(video.duration)}))
+            print("Sent")
+            ws.close()
+        else:
+            r = requests.get('https://www.youtube.com/results?search_query=' + temp)
+            soup = BeautifulSoup(r.text, 'html.parser')
+            select = soup.select('h3.yt-lockup-title a')
+            for i in select:
+                temp = 'https://www.youtube.com' + i['href']
+                break
+        playlist.append(temp)
+        message = TextSendMessage(text = temp + ' is added to the queue.')
+    elif text[0] == '!queue':
+        if not playlist:
+            message = TextSendMessage(text = 'The queue is empty.')
+        else:
+            temp = 'Now playing:\n' + playlist[0]
+            if len(playlist) > 1:
+                temp += '\nThe queue:\n'
+                for i in playlist[1:]:
+                    temp += i + '\n'
+                temp = temp[:-1]
+            message = TextSendMessage(text = temp)
+    elif text[0] == '!nowplaying':
+        message = TextSendMessage(text = 'Now playing: ' + playlist[0])
+    elif text[0] == '!skip':
+        if playlist:
+            message = TextSendMessage(text = playlist[0] + ' is skiped.')
+            playlist = playlist[1:]
+        else:
+            message = TextSendMessage(text = 'The queue is empty.')
+    elif text[0] == '!stop':
+        playlist = []
+        message = TextSendMessage(text='The queue is cleared.')
+    elif text[0] == '!pause':
+        ws = create_connection("ws://videocontrolwebsocket.herokuapp.com", http_proxy_port=80)
+        ws.send(json.dumps({"type": "stop"}))
+        print("Sent")
+        ws.close()
+        message = TextSendMessage(text='Music had been paused.')
+    elif text[0] == '!play':
+        ws = create_connection("ws://videocontrolwebsocket.herokuapp.com", http_proxy_port=80)
+        ws.send(json.dumps({"type": "play"}))
+        print("Sent")
+        ws.close()
+        message = TextSendMessage(text='Music is playing.')
+    else:
+        message = TextSendMessage(text=event.message.text)
+    line_bot_api.reply_message(event.reply_token, message)
+import os
+if __name__ == "__main__":
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
+
+
