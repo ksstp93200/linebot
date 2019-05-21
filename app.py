@@ -66,6 +66,15 @@ def handle_message(event):
             ws.send(json.dumps({"type": "url", "data": playurl, 'time': gettime(video.duration)}))
             print("Sent")
             ws.close()
+        elif temp.startswith('https://youtu.be/'):
+            temp = temp
+            video = pafy.new(temp)
+            best = video.getbest()
+            playurl = best.url
+            ws = create_connection("ws://videocontrolwebsocket.herokuapp.com", http_proxy_port=80)
+            ws.send(json.dumps({"type": "url", "data": playurl, 'time': gettime(video.duration)}))
+            print("Sent")
+            ws.close()
         else:
             r = requests.get('https://www.youtube.com/results?search_query=' + temp)
             soup = BeautifulSoup(r.text, 'html.parser')
