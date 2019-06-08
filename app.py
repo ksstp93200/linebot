@@ -63,7 +63,7 @@ def handle_message(event):
             best = video.getbest()
             playurl = best.url
             ws = create_connection("ws://videocontrolwebsocket.herokuapp.com", http_proxy_port=80)
-            ws.send(json.dumps({"type": "url", "data": playurl, 'time': gettime(video.duration)}))
+            ws.send(json.dumps({"type": "url", "data": playurl, 'time': gettime(video.duration), 'title': video.title}))
             print("Sent")
             ws.close()
         elif temp.startswith('https://youtu.be/'):
