@@ -4,5 +4,5 @@ requests
 bs4
 pafy
 websockets
-youtube-dl
+youtube-dl==2019.5.11
 websocket-client
