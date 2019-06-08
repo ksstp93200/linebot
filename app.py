@@ -20,9 +20,10 @@ import json
 app = Flask(__name__)
 
 # Channel Access Token
-line_bot_api = LineBotApi('fFNRxLrANqaPIV9TVBuD90+S8sD8JgiKtpssq8oZwYnu/mcbMwlbojMZvOpwR+Nq0K06J7DXVXEwmzHiGuC0zYkDYLaiHrwh4w9QCubxtFVymjqF60C4pPKXQGj0FfqqW1Wy03+vAo0POYOfkmdsxQdB04t89/1O/w1cDnyilFU=')
+line_bot_api = LineBotApi('ndPIBS61LBtLU1PgA5fohOMtYFXKchqGQJYQJ2t0K6pdYoQt+ozg0kK4W3B8ubqH/lOuBDu0Kw/KZEWj9Rtt2/OEc1xatSOPmsRnwLlfugVLM2L5DWWk9YnWJ+lv6MayexWYMxb89FHX4LNGoC3ijwdB04t89/1O/w1cDnyilFU=
+')
 # Channel Secret
-handler = WebhookHandler('67f3fc39b2f43287b6b34bb7ce54b1d7')
+handler = WebhookHandler('6d9210ca7b02dceaa9bb14fbffd84dc0')
 
 #####
 global playlist
