@@ -119,7 +119,7 @@ def handle_message(event):
         ws.close()
         message = TextSendMessage(text='Music is playing.')
     else:
-        message = TextSendMessage(text=event.message.text)
+        message = TextSendMessage(text="錯誤的指令，輸入!help以獲取指令列表")
     line_bot_api.reply_message(event.reply_token, message)
 import os
 if __name__ == "__main__":
