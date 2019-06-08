@@ -27,6 +27,7 @@ handler = WebhookHandler('6d9210ca7b02dceaa9bb14fbffd84dc0')
 #####
 global playlist
 playlist = []
+pafy.BACK_END = "internal"
 
 def gettime(s):
     t = s.split(":")
