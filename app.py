@@ -20,7 +20,7 @@ import json
 app = Flask(__name__)
 
 # Channel Access Token
-line_bot_api = LineBotApi('ndPIBS61LBtLU1PgA5fohOMtYFXKchqGQJYQJ2t0K6pdYoQt+ozg0kK4W3B8ubqH/lOuBDu0Kw/KZEWj9Rtt2/OEc1xatSOPmsRnwLlfugVLM2L5DWWk9YnWJ+lv6MayexWYMxb89FHX4LNGoC3ijwdB04t89/1O/w1cDnyilFU=')
+line_bot_api = LineBotApi('+TiqDeaMj4yTJNxfJYISn5KRdyKUDU1V0+A5Oul26k9nwio9VhEqLyHeX6CsRVpR/lOuBDu0Kw/KZEWj9Rtt2/OEc1xatSOPmsRnwLlfugVgLdeZ7XzwJZgcd3rfFK2/DLcPPqRczRUTXkOLPwLT6QdB04t89/1O/w1cDnyilFU=')
 # Channel Secret
 handler = WebhookHandler('6d9210ca7b02dceaa9bb14fbffd84dc0')
 
